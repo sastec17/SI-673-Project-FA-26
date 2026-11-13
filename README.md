@@ -1,17 +1,6 @@
 # SI 673 Final Project
 
-Borromean Digital needs you to build a cloud application that receives, processes, stores, and responds to data from an ESP32 camera/light-sensor device. Full requirements and checkpoints are in [`final-project-spec.md`](final-project-spec.md).
-
-## What's in this repo
-
-| Path | What it is |
-| --- | --- |
-| `final-project-spec.md` | The project assignment |
-| `lambda-starter/` | Starter code if you receive data with **API Gateway + Lambda** |
-| `ec2-starter/` | Starter code if you receive data with a **Flask app on EC2** |
-| `instructor-code/` | Our backend and device firmware, for the curious. You don't need to run or change these. |
-
-Pick **one** starter. Both handle light and image data and include `TODO`s for processing, storage, and output.
+Borromean Digital needs you to build a cloud application that receives, processes, stores, and responds to data from an ESP32 camera/light-sensor device. Full requirements, due dates, and checkpoints are in [`final-project-spec.md`](final-project-spec.md).
 
 ## Connecting to Your Device
 
@@ -28,7 +17,7 @@ ESP32  ──►  Instructor forwarder  ──►  Your endpoint (Lambda or EC2)
   └───────────── your JSON response ──────────┘
 ```
 
-## What your endpoint receives
+### What your endpoint receives
 
 Every request is an HTTP `POST` with these headers:
 
@@ -41,7 +30,7 @@ Every request is an HTTP `POST` with these headers:
 - **Light** body: `{"type": "light", "value": 1850}` — value ranges from 0 (dark) to 4095 (bright)
 - **Image** body: the raw JPEG bytes
 
-## What your endpoint should return
+### What your endpoint should return
 
 Return JSON to control the device. Every field is optional:
 
@@ -55,7 +44,7 @@ Return JSON to control the device. Every field is optional:
 
 Respond within **10 seconds**, or the forwarder will give up on your request
 
-## Option A: API Gateway + Lambda
+## Project Option A: API Gateway + Lambda
 
 1. Create a Lambda function (Python 3.12+) and paste in `lambda-starter/lambda_function.py`.
 2. Create an **HTTP API** in API Gateway with a `POST /` route integrated with your Lambda.
@@ -63,7 +52,7 @@ Respond within **10 seconds**, or the forwarder will give up on your request
 4. Test in the Lambda console using `lambda-starter/test-event-light.json` as a test event.
 5. View incoming data in **CloudWatch Logs** for your function.
 
-## Option B: Flask on EC2
+## Project Option B: Flask on EC2
 
 1. Launch an EC2 instance and allow inbound TCP on port **5000** in its security group
 2. Copy `ec2-starter/` onto the instance, then:
