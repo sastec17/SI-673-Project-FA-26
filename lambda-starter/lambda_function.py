@@ -7,10 +7,10 @@ Every request has two headers that tell you what arrived:
     X-Device-ID   your device's ID
     X-Data-Type   "light" or "image"
 
-Light requests have a JSON body:  {"type": "light", "value": 0-4095}
-Image requests have a raw JPEG body (API Gateway base64-encodes it).
+Light requests have a JSON body:  {"type": "light", "value": 825}
+Image requests have a raw JPEG body (API Gateway base64-encodes it)
 
-Whatever JSON you return is sent back to your device.
+Whatever JSON you return is sent back to your device
 """
 
 import base64
@@ -30,15 +30,13 @@ def respond(status_code, body):
 
 
 def lambda_handler(event, context):
-    # Header names can arrive in any case, so normalize them.
     headers = {
-        key.lower(): value
-        for key, value in (event.get("headers") or {}).items()
+        key.lower(): value for key, value in (event.get("headers") or {}).items()
     }
     device_id = headers.get("x-device-id")
     data_type = headers.get("x-data-type")
 
-    # Binary bodies (images) arrive base64-encoded.
+    # Binary bodies (images) arrive base64-encoded
     raw_body = event.get("body") or ""
     if event.get("isBase64Encoded", False):
         body = base64.b64decode(raw_body)
@@ -50,7 +48,7 @@ def lambda_handler(event, context):
         logger.info("Light reading from %s: %s", device_id, reading["value"])
 
         # TODO: Process the reading with your own logic
-        #       (e.g. compare against a threshold, detect changes over time).
+        #       (e.g. compare against a threshold, detect changes over time)
 
         # TODO: Store readings in persistent storage (e.g. DynamoDB)
         #       under some condition you choose.
@@ -62,15 +60,19 @@ def lambda_handler(event, context):
         #       boto3.client("rekognition").detect_labels(Image={"Bytes": body})
 
         # TODO: Store images in persistent storage (e.g. S3) under some
-        #       condition you choose (e.g. only images containing people).
+        #       condition you choose (e.g. only images containing people)
 
     else:
         return respond(400, {"error": f"Unknown data type: {data_type}"})
 
     # TODO: Customize what your device shows/does based on your results.
-    #       "message" appears on the OLED; "light" and "buzzer" are on/off.
-    return respond(200, {
-        "message": "Data received!",
-        "light": False,
-        "buzzer": False,
-    })
+    #       "message" appears on the OLED; "light" and "buzzer" are on/off
+
+    return respond(
+        200,
+        {
+            "message": "Data received!",
+            "light": False,
+            "buzzer": False,
+        },
+    )

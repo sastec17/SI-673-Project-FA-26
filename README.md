@@ -1,6 +1,6 @@
-# SI 673 Final Project — Starter Code
+# SI 673 Final Project
 
-Build a cloud application that receives, processes, stores, and responds to data from an ESP32 camera/light-sensor device. Full requirements and checkpoints are in [`final-project-spec.md`](final-project-spec.md).
+Borromean Digital needs you to build a cloud application that receives, processes, stores, and responds to data from an ESP32 camera/light-sensor device. Full requirements and checkpoints are in [`final-project-spec.md`](final-project-spec.md).
 
 ## What's in this repo
 
