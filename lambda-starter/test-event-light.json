@@ -1,0 +1,9 @@
+{
+  "headers": {
+    "content-type": "application/json",
+    "x-device-id": "si673-test01",
+    "x-data-type": "light"
+  },
+  "body": "{\"type\": \"light\", \"value\": 1850}",
+  "isBase64Encoded": false
+}
