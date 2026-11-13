@@ -7,7 +7,7 @@
   <title>Device Dashboard</title>
   <style>
     body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
-    .card { border: 1px solid #ccc; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+    .card {   padding: 1rem; margin-bottom: 1rem; }
     img { max-width: 100%; }
     .muted { color: #777; }
   </style>
@@ -19,7 +19,7 @@
   <div class="card">
     <h2>Light</h2>
     {% if light_value is not none %}
-      <p><strong>{{ light_value }}</strong> <span class="muted">(0-4095)</span></p>
+      <p><strong>{{ light_value }}</strong></p>
       <p class="muted">Received {{ light_time }}</p>
     {% else %}
       <p class="muted">No light data yet.</p>

@@ -1,25 +1,20 @@
 /*
-  SI 673 - ESP32 Cloud Sensor (XIAO ESP32-S3 Sense)
+  SI 673 Fall '26 - ESP32 Cloud Sensor
+
+  Assumes ESP32 S3 Sense, Seeed Studio XIAO Expansion board, Seeed Studio Grove Light Sensor
 
   Sends:
-    * JPEG photos to the instructor's /forward endpoint
-    * JSON light readings to the same endpoint
+  - JPEG photos to the instructor's /forward endpoint
+  - JSON light readings to the same endpoint
 
   Receives JSON commands from the cloud:
     {"message":"Person detected!","light":true,"buzzer":true}
 
   The message, light, and buzzer are independent. A missing field
-  leaves its corresponding output unchanged. Also accepts the legacy
-  "display_message" key and nested API/Lambda response bodies.
+  leaves its corresponding output unchanged
 
-  OLED: row 0 shows status (WiFi, upload results), row 1 the device
+  The OLED display: row 0 shows status (WiFi, upload results), row 1 the device
   ID to register in the portal, rows 3-7 the application's message.
-
-  Test outputs without AWS: open Serial Monitor at 115200 baud, select
-  Newline, and send the JSON example above.
-
-  Libraries: ArduinoJson 7, U8g2 (U8x8lib)
-  Board: XIAO_ESP32S3; Tools > PSRAM > OPI PSRAM
 */
 
 #include <Arduino.h>
@@ -44,8 +39,7 @@ const char* INSTRUCTOR_API =
   "https://zv03u2szki.execute-api.us-east-1.amazonaws.com/forward";
 
 // Leave empty to auto-generate a unique ID from the chip's MAC address
-// (e.g. "si673-a1b2c3"). The ID is shown on the OLED so students can
-// register it in the portal. Set a value only to force a specific ID.
+// (e.g. "si673-a1b2c3") - ID is shown on the OLED display for registration
 const char* DEVICE_ID_OVERRIDE = "";
 
 const char* WELCOME_MESSAGE = "Welcome to Borromean";
