@@ -32,8 +32,8 @@
 // CONFIGURATION - EDIT THESE FOR YOUR NETWORK AND HARDWARE
 // ============================================================
 
-const char* WIFI_SSID = "YOUR_WIFI_SSID";
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+const char* WIFI_SSID = "MSetup";
+const char* WIFI_PASSWORD = "";
 
 const char* INSTRUCTOR_API =
   "https://zv03u2szki.execute-api.us-east-1.amazonaws.com/forward";
@@ -44,8 +44,8 @@ const char* DEVICE_ID_OVERRIDE = "";
 
 const char* WELCOME_MESSAGE = "Welcome to Borromean";
 
-const unsigned long CAMERA_INTERVAL_MS = 5000;
-const unsigned long LIGHT_INTERVAL_MS = 3000;
+const unsigned long CAMERA_INTERVAL_MS = 500;
+const unsigned long LIGHT_INTERVAL_MS = 1000;
 const unsigned long WIFI_RETRY_INTERVAL_MS = 15000;
 
 // Seeed XIAO ESP32-S3 Sense + Expansion Base for XIAO:
@@ -371,8 +371,10 @@ void maintainWiFi() {
   if (WiFi.status() == WL_CONNECTED) {
     if (!wifiWasConnected) {
       wifiWasConnected = true;
+
       Serial.print("[WIFI] Connected. IP: ");
       Serial.println(WiFi.localIP());
+
       showStatus(cameraReady ? "WiFi connected" : "WiFi ok, no cam");
 
       // Only on first connect, so a reconnect keeps the student's message.
@@ -394,9 +396,19 @@ void maintainWiFi() {
       now - lastWiFiAttempt >= WIFI_RETRY_INTERVAL_MS) {
     wifiAttemptStarted = true;
     lastWiFiAttempt = now;
+
     showStatus("Connecting WiFi");
+
     Serial.printf("[WIFI] Connecting to %s\n", WIFI_SSID);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    WiFi.mode(WIFI_STA);
+
+    // Open network vs password-protected network
+    if (strlen(WIFI_PASSWORD) == 0) {
+      WiFi.begin(WIFI_SSID);
+    } else {
+      WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    }
   }
 }
 
@@ -501,6 +513,8 @@ void handleResponse(const char* dataType, int status, const String& body) {
 
   if (status < 200 || status >= 300) {
     Serial.println("[HTTP] Request failed; outputs unchanged");
+    // Clear the previous message so a stale reply isn't mistaken for live.
+    showMessage("Error");
     if (status == 404) {
       showStatus("Not registered");
     } else {
@@ -572,6 +586,7 @@ void sendToGateway(const char* dataType,
     char line[OLED_COLS + 1];
     snprintf(line, sizeof(line), "%s: no network", dataType);
     showStatus(line);
+    showMessage("Error");
   }
 
   http.end();
