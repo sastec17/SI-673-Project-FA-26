@@ -16,6 +16,7 @@ Your completed application must:
 
 - **Receive device data:** Configure either an EC2 instance or an API Gateway endpoint with an AWS Lambda function to receive data from your assigned ESP32.
 - **Process data:** Perform a meaningful operation on incoming images, light measurements, or both.
+  - We strongly encourage the use of Rekognition and/or Bedrock in this project!
 - **Store data:** Use persistent storage for either light or image data under some condition (for example, only store images containing people).
 - **Produce an output:** Generate a useful result, such as an OLED message, dashboard, alert, or stored record.
 - **Document your architecture:** Create a diagram showing how data flows between your device and AWS services.
@@ -51,7 +52,7 @@ In this checkpoint, you must:
 - Verify that your Lambda function successfully receives data from your device.
 - Return a basic acknowledgment from Lambda to your device.
 
-**Deliverable:** Include screenshots showing your API Gateway configuration, successful Lambda execution (including received device data), and device registration.
+**Deliverable:** Include screenshots showing your API Gateway configuration, successful Lambda execution (including received device data), and Cloudwatch logs. You must also include a selfie with your device to prove in-class participation.
 
 ### Checkpoint 2: Project Proposal
 
@@ -68,8 +69,6 @@ Include:
 - **Architecture diagram:** Show how your device and AWS services will communicate.
 
 Your proposed architecture may evolve as you begin implementation.
-
-**Submission:** Submit one document containing your Checkpoint 1 screenshots and Checkpoint 2 proposal by November 23 at 11:59 PM.
 
 ### Checkpoint 3: Implementation and Demonstration
 
