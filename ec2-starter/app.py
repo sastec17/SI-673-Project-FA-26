@@ -40,7 +40,8 @@ latest = {
 def receive_data():
     device_id = request.headers.get("X-Device-ID")
     data_type = request.headers.get("X-Data-Type")
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Milliseconds, so two images in the same second still look different.
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     latest["device_id"] = device_id
 
     if data_type == "light":
@@ -78,6 +79,18 @@ def receive_data():
 @app.route("/")
 def dashboard():
     return render_template("index.html", **latest)
+
+
+@app.route("/latest.json")
+def latest_json():
+    # The dashboard polls this to update without reloading the page.
+    # Image bytes aren't JSON; the page loads them from /latest.jpg.
+    return jsonify(
+        device_id=latest["device_id"],
+        light_value=latest["light_value"],
+        light_time=latest["light_time"],
+        image_time=latest["image_time"],
+    )
 
 
 @app.route("/latest.jpg")

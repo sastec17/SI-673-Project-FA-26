@@ -2,8 +2,6 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <!-- Reload every 5 seconds to show new data -->
-  <meta http-equiv="refresh" content="5">
   <title>Device Dashboard</title>
   <style>
     body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
@@ -14,26 +12,53 @@
 </head>
 <body>
   <h1>Device Dashboard</h1>
-  <p class="muted">Device: {{ device_id or "waiting for data..." }}</p>
+  <p class="muted">Device: <span id="device">{{ device_id or "waiting for data..." }}</span></p>
 
   <div class="card">
     <h2>Light</h2>
-    {% if light_value is not none %}
-      <p><strong>{{ light_value }}</strong></p>
-      <p class="muted">Received {{ light_time }}</p>
-    {% else %}
-      <p class="muted">No light data yet.</p>
-    {% endif %}
+    <p><strong id="light-value">{{ light_value if light_value is not none else "" }}</strong></p>
+    <p class="muted" id="light-time">
+      {{ "Received " ~ light_time if light_time else "No light data yet." }}
+    </p>
   </div>
 
   <div class="card">
     <h2>Camera</h2>
-    {% if image_time %}
-      <img src="/latest.jpg?t={{ image_time }}" alt="Latest camera image">
-      <p class="muted">Received {{ image_time }}</p>
-    {% else %}
-      <p class="muted">No image yet.</p>
-    {% endif %}
+    <img id="camera" alt="Latest camera image"
+         {% if image_time %}src="/latest.jpg?t={{ image_time }}"{% else %}hidden{% endif %}>
+    <p class="muted" id="image-time">
+      {{ "Received " ~ image_time if image_time else "No image yet." }}
+    </p>
   </div>
+
+  <script>
+    // Updates the page with the latest data, without a full reload.
+    let lastImageTime = {{ image_time | tojson }};
+
+    async function refresh() {
+      const data = await (await fetch("/latest.json")).json();
+
+      if (data.device_id) {
+        document.getElementById("device").textContent = data.device_id;
+      }
+
+      if (data.light_value !== null) {
+        document.getElementById("light-value").textContent = data.light_value;
+        document.getElementById("light-time").textContent = "Received " + data.light_time;
+      }
+
+      // Only download the image when a new one has arrived.
+      if (data.image_time && data.image_time !== lastImageTime) {
+        lastImageTime = data.image_time;
+        const img = document.getElementById("camera");
+        img.src = "/latest.jpg?t=" + encodeURIComponent(data.image_time);
+        img.hidden = false;
+        document.getElementById("image-time").textContent = "Received " + data.image_time;
+      }
+    }
+
+    // Check for new data every second.
+    setInterval(refresh, 1000);
+  </script>
 </body>
 </html>
